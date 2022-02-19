@@ -71,6 +71,7 @@ compile_commands.json
 # whitelist
 !.gitignore
 !.gitattributes
+!.circleci
 !.dockerignore
 !.gitmodules
 !.astylerc

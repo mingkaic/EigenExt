@@ -1,0 +1,6 @@
+bazel-*
+.*
+
+!.git
+!.bazelrc
+!.bazelignore
