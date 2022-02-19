@@ -30,7 +30,7 @@ echo "===== TESTS =====";
 
 source "$THIS_DIR/coverage.sh";
 
-bzl_coverage //...
+bzl_coverage //EigenExt/...
 
 python3 "$THIS_DIR/label_replace.py" $TMP_COVFILE $CONVERSION_CSV > $OUT_COVFILE;
 send2codecov "$OUT_COVFILE";
