@@ -1,0 +1,60 @@
+
+# ------ ALL SETTINGS ------
+
+run --jobs=3 --copt=-DGRPC_BAZEL_BUILD
+build --jobs=3 --copt=-DGRPC_BAZEL_BUILD
+test --jobs=3 --copt=-DGRPC_BAZEL_BUILD
+coverage --jobs=3 --copt=-DGRPC_BAZEL_BUILD
+
+# ------ HARDWARE ------
+
+run:safe --jobs=2
+build:safe --jobs=2
+test:safe --jobs=2
+coverage:safe --jobs=2
+
+# ------ OPTIMIZATION ------
+
+run:clang_eigen_optimal --copt="-march=native" --copt="-openmp" --copt="-O3"
+build:clang_eigen_optimal --copt="-march=native" --copt="-openmp" --copt="-O3"
+test:clang_eigen_optimal --copt="-march=native" --copt="-openmp" --copt="-O3"
+coverage:clang_eigen_optimal --copt="-march=native" --copt="-openmp" --copt="-O3"
+
+run:gcc_eigen_optimal --linkopt="-lgomp" --copt="-march=native" --copt="-fopenmp" --copt="-O3"
+build:gcc_eigen_optimal --linkopt="-lgomp" --copt="-march=native" --copt="-fopenmp" --copt="-O3"
+test:gcc_eigen_optimal --linkopt="-lgomp" --copt="-march=native" --copt="-fopenmp" --copt="-O3"
+coverage:gcc_eigen_optimal --linkopt="-lgomp" --copt="-march=native" --copt="-fopenmp" --copt="-O3"
+
+# ------ TEST & COVERAGE SETTINGS ------
+
+# === ALL TESTS & COVERAGES ===
+
+# show all test output, make failures verbose and never cache
+test --test_output=all --verbose_failures --cache_test_results=no
+
+# show all coverage outputs
+coverage --test_output=all --verbose_failures --instrumentation_filter=
+
+# === C++ COVERAGE ===
+
+coverage:cc_coverage --experimental_cc_coverage --combined_report=lcov --coverage_report_generator=@bazel_tools//tools/test/CoverageOutputGenerator/java/com/google/devtools/coverageoutputgenerator:Main
+
+# === MEMORY ANALYSIS ===
+
+# using valgrind
+run:valgrind --run_under="valgrind --leak-check=full --show-leak-kinds=all"
+test:valgrind --run_under="valgrind --leak-check=full --show-leak-kinds=all"
+coverage:valgrind --run_under="valgrind --leak-check=full --show-leak-kinds=all"
+
+# using asan
+run:asan --linkopt -fsanitize=address
+test:asan --linkopt -fsanitize=address
+coverage:asan --linkopt -fsanitize=address
+
+# === GTESTS ===
+
+test:gtest --action_env="GTEST_SHUFFLE=1" --action_env="GTEST_BREAK_ON_FAILURE=1"
+coverage:gtest --action_env="GTEST_SHUFFLE=1" --action_env="GTEST_BREAK_ON_FAILURE=1"
+
+test:full --action_env="GTEST_REPEAT=50"
+coverage:full --action_env="GTEST_REPEAT=50"

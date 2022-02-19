@@ -1,0 +1,55 @@
+licenses(["notice"])
+
+filegroup(
+    name = "srcs",
+    srcs = [
+        "BUILD.bazel",
+        ":eigen_ext_hdrs",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "eigen_ext_hdrs",
+    srcs = glob(["*.h"]),
+)
+
+filegroup(
+    name = "test_srcs",
+    srcs = glob(["test/*.cpp"]),
+)
+
+######### LIBRARY #########
+
+cc_library(
+    name = "eigen_ext",
+    hdrs = [":eigen_ext_hdrs"],
+    copts = ["-std=c++17"],
+    visibility = ["//visibility:public"],
+    deps = ["@com_github_eigenteam_eigen//:eigen"],
+)
+
+######### TEST #########
+
+cc_test(
+    name = "test",
+    srcs = [":test_srcs"],
+    copts = ["-std=c++17"],
+    deps = [
+        ":eigen_ext",
+        "@com_github_mingkaic_verum//exam:exam",
+    ],
+    linkstatic = True,
+)
+
+cc_test(
+    name = "mutation",
+    srcs = glob(["mutation/*.hpp", "mutation/*.cpp"]),
+    copts = ["-std=c++17"],
+    deps = [
+        ":eigen_ext",
+        "@com_github_mingkaic_verum//muta:muta",
+        "@com_github_mingkaic_verum//exam:exam",
+    ],
+    linkstatic = True,
+)
